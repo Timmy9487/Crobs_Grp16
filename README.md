@@ -4,6 +4,7 @@
 
 ### COMPLETED
 [25089289D] Candice: Room Module (R7-9, R15-16)
+[25081767D] Tim:REQ1,REQ18
 >> **check [CHANGELOG.md](CHANGELOG.md)**
 
 ### TO-DO
@@ -11,14 +12,14 @@ User & Permission Module (R2-6)
 
 Booking & Search Module (R10-14,17)
 
-Infrastructure, Logging, Testing & Integration (R1,18, testing, B1-2)
+Infrastructure, Logging, Testing & Integration ( testing, B1-2)
 
 ---
 ### 1. Complete Project Structure
 ```
 [x]: completed
 [o]: created, needs to be added to
-[?]: idk lol. it exists
+[?]: incomplete
 
 note for CROBS.java: i might have missed an import so should double check later
 ```
@@ -27,14 +28,14 @@ crobs
 │
 ├── [?] Application.java
 │
-├──[o]logging
-│   [o]├── Logger.java
-│   [o]├── TxtLogger.java
-│   [o]├── HtmlLogger.java
-│   [o]└── LogManager.java
+├──[x]logging
+│   [x]├── Logger.java
+│   [x]├── TxtLogger.java
+│   [x]├── HtmlLogger.java
+│   [x]└── LogManager.java
 │
 ├── model
-│   ├── [x] CROBS.java
+│   ├── [?] CROBS.java
 │   │
 │   ├── user
 │   │   ├── User.java
@@ -52,10 +53,10 @@ crobs
 │   └── enums
 │       └── UserRole.java
 │
-├── [o] command
-│   ├──ParsedCommand.java
-│   ├── [o] CommandProcessor.java
-│   └── CommandParser.java
+├── [x] command
+│   ├──[x]ParsedCommand.java
+│   ├──[x] CommandProcessor.java
+│   └──[x] CommandParser.java
 │   │
 │   ├── [o]Command.java          (BON2)
 │   │
