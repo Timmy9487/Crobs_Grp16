@@ -1,6 +1,7 @@
 package hk.edu.polyu.comp.comp2021.crobs.model;
 
 import hk.edu.polyu.comp.comp2021.crobs.command.CommandProcessor;
+import hk.edu.polyu.comp.comp2021.crobs.logging.LogManager;
 import hk.edu.polyu.comp.comp2021.crobs.manager.BookingManager;
 import hk.edu.polyu.comp.comp2021.crobs.manager.RoomManager;
 import hk.edu.polyu.comp.comp2021.crobs.manager.UserManager;
@@ -9,54 +10,179 @@ import hk.edu.polyu.comp.comp2021.crobs.service.SearchService;
 
 import java.util.Scanner;
 
+/**
+ * Main CROBS system class.
+ *
+ * Responsibilities:
+ * - Maintain system state
+ * - Hold references to managers/services
+ * - Maintain current logged-in user
+ * - Run the command loop
+ * - Handle REQ18 (quit)
+ */
 public class CROBS {
 
-    private UserManager userManager;
-    private RoomManager roomManager;
-    private BookingManager bookingManager;
-    private SearchService searchService;
-    private CommandProcessor commandProcessor;
-    private User currentUser; // starts at null (r5)
+    /* ===============================
+       Core Managers
+       =============================== */
 
-    public CROBS(String htmlLogFile, String txtLogFile) {
+    private final UserManager userManager;
+    private final RoomManager roomManager;
+    private final BookingManager bookingManager;
+    private final SearchService searchService;
+
+    /* ===============================
+       Command Handling
+       =============================== */
+
+    private final CommandProcessor commandProcessor;
+
+    /* ===============================
+       Logging (REQ1)
+       =============================== */
+
+    private final LogManager logManager;
+
+    /* ===============================
+       Current Session
+       =============================== */
+
+    private User currentUser;
+
+    /* ===============================
+       REQ18 Program State
+       =============================== */
+
+    private boolean running;
+
+    /**
+     * Constructor.
+     *
+     * @param logManager handles HTML and TXT logging
+     */
+    public CROBS(LogManager logManager) {
+
+        // Store logger
+        this.logManager = logManager;
+
+        // Create managers
         userManager = new UserManager();
         roomManager = new RoomManager();
         bookingManager = new BookingManager();
 
-        // wire RoomManager to BookingManager so REQ9 can cancel future bookings when deleting a room
+        /*
+         * Allows RoomManager to access bookings.
+         * Needed later for REQ9:
+         * deleteRoom() must cancel future bookings.
+         */
         roomManager.setBookingManager(bookingManager);
 
-        searchService = new SearchService(roomManager, bookingManager);
-        commandProcessor = new CommandProcessor(this);
+        // Create services
+        searchService =
+                new SearchService(
+                        roomManager,
+                        bookingManager
+                );
 
+        // Command dispatcher
+        commandProcessor =
+                new CommandProcessor(this);
+
+        // Session starts with nobody logged in
+        currentUser = null;
+
+        // Program starts running
+        running = true;
+
+        // Create default accounts
         initializeDefaultUsers();
     }
 
+    /**
+     * Creates default users.
+     *
+     * Example:
+     * - SUPERADMIN
+     * - initial ADMIN
+     */
     private void initializeDefaultUsers() {
-        // creates default superadmin user at startup
-        // e.g., userManager.createSuperAdmin();
+
+        // Example implementation later:
+        //
+        // userManager.createSuperAdmin(
+        //      "U000",
+        //      "superadmin");
     }
 
+    /**
+     * Starts the CLI loop.
+     *
+     * REQ18:
+     * quit -> terminate system
+     */
     public void start() {
+
         Scanner scanner = new Scanner(System.in);
-        while (true) {
-            String command = scanner.nextLine();
-            if (command.trim().equals("quit")) {
-                break;
+
+        System.out.println("Welcome to CROBS");
+
+        while (running) {
+
+            System.out.print("> ");
+
+            String command =
+                    scanner.nextLine().trim();
+
+            // Ignore empty input
+            if (command.isEmpty()) {
+                continue;
             }
+
+            // REQ1:
+            // Log every command entered
+            logManager.log(command);
+
+            // REQ18:
+            // quit command
+            if (command.equalsIgnoreCase("quit")) {
+
+                quit();
+
+                continue;
+            }
+
+            // Process all other commands
             commandProcessor.process(command);
         }
+
+        // Close log files before program exits
+        logManager.close();
+
+        scanner.close();
     }
 
-    // ==========================================
-    // getters and setters for CommandProcessor
-    // ==========================================
-    public RoomManager getRoomManager() {
-        return roomManager;
+    /**
+     * REQ18
+     * Terminates CROBS.
+     */
+    public void quit() {
+
+        System.out.println("CROBS terminated.");
+
+        running = false;
     }
+
+    /* ===============================
+       Getters / Setters
+       Used by CommandProcessor
+       =============================== */
 
     public UserManager getUserManager() {
         return userManager;
+    }
+
+    public RoomManager getRoomManager() {
+        return roomManager;
     }
 
     public BookingManager getBookingManager() {
@@ -73,5 +199,9 @@ public class CROBS {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public LogManager getLogManager() {
+        return logManager;
     }
 }
