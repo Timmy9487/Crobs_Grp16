@@ -27,6 +27,12 @@ crobs
 │
 ├── [?] Application.java
 │
+├──[o]logging
+│   [o]├── Logger.java
+│   [o]├── TxtLogger.java
+│   [o]├── HtmlLogger.java
+│   [o]└── LogManager.java
+│
 ├── model
 │   ├── [x] CROBS.java
 │   │
