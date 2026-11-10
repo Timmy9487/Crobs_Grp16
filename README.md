@@ -53,7 +53,7 @@ crobs
 │   └── enums
 │       └── UserRole.java
 │
-├── [x] command
+├── [o] command
 │   ├──[x]ParsedCommand.java
 │   ├──[o] CommandProcessor.java
 │   └──[x] CommandParser.java
@@ -85,10 +85,6 @@ crobs
 │   ├── UserManager.java
 │   ├── [x] RoomManager.java
 │   └── BookingManager.java
-│
-├── log
-│   ├── HTMLLogger.java
-│   └── TXTLogger.java
 │
 ├── [o] exception
 │   ├── [x] PermissionDeniedException.java
