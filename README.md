@@ -1,11 +1,34 @@
 # Crobs_Grp16
-1. Complete Project Structure
+
+## Work division + Checklist
+
+### COMPLETED
+[25089289D] Candice: Room Module (R7-9, R15-16)
+>> **check [CHANGELOG.md](CHANGELOG.md)**
+
+### TO-DO
+User & Permission Module (R2-6)
+
+Booking & Search Module (R10-14,17)
+
+Infrastructure, Logging, Testing & Integration (R1,18, testing, B1-2)
+
+---
+### 1. Complete Project Structure
+```
+[x]: completed
+[o]: created, needs to be added to
+[?]: idk lol. it exists
+
+note for CROBS.java: i might have missed an import so should double check later
+```
+```
 crobs
 │
-├── Application.java
+├── [?] Application.java
 │
 ├── model
-│   ├── CROBS.java
+│   ├── [x] CROBS.java
 │   │
 │   ├── user
 │   │   ├── User.java
@@ -13,9 +36,9 @@ crobs
 │   │   ├── AdminUser.java
 │   │   └── SuperAdmin.java
 │   │
-│   ├── room
-│   │   ├── Room.java
-│   │   └── RoomType.java
+│   ├── [x] room
+│   │   ├── [x] Room.java
+│   │   └── [x] RoomType.java
 │   │
 │   ├── booking
 │   │   └── Booking.java
@@ -23,8 +46,8 @@ crobs
 │   └── enums
 │       └── UserRole.java
 │
-├── command
-│   ├── CommandProcessor.java
+├── [o] command
+│   ├── [o] CommandProcessor.java
 │   └── CommandParser.java
 │
 ├── service
@@ -33,28 +56,30 @@ crobs
 │   ├── BookingService.java
 │   └── SearchService.java
 │
-├── manager
+├── [o] manager
 │   ├── UserManager.java
-│   ├── RoomManager.java
+│   ├── [x] RoomManager.java
 │   └── BookingManager.java
 │
 ├── log
 │   ├── HTMLLogger.java
 │   └── TXTLogger.java
 │
-├── exception
-│   ├── PermissionDeniedException.java
-│   ├── InvalidCommandException.java
-│   ├── UserNotFoundException.java
-│   ├── RoomNotFoundException.java
+├── [o] exception
+│   ├── [x] PermissionDeniedException.java
+│   ├── [x] InvalidCommandException.java
+│   ├── UserNotFoundException.java 
+│   ├── [x] RoomNotFoundException.java
 │   └── BookingNotFoundException.java
 │
-└── util
-    ├── IDGenerator.java
+└── [o] util
+    ├── [x] IDGenerator.java
     ├── DateUtil.java
     └── ValidationUtil.java
+```
    
-2. Requirement Mapping
+### 2. Requirement Mapping
+```
 REQ1 -> HtmlLogger, TxtLogger
 REQ2 -> UserManager.addUser()
 REQ3 -> UserManager.removeUser()
@@ -73,22 +98,24 @@ REQ15 -> RoomManager.listRoom()
 REQ16 -> RoomManager.listAllRooms()
 REQ17 -> BookingManager.listBookings()
 REQ18 -> Application.quit()
+```
 
-3. High Mark Design Tips
-• Follow MVC strictly.
-• Keep business logic in model package.
-• Use HashMap for users, rooms and bookings.
-• Use LocalDate and LocalTime.
-• Use enums instead of raw strings.
-• Generate IDs U001/R001/B001.
-• Centralize permission checking.
-• Validate before modifying data.
-• Handle all errors gracefully.
-• Test success paths and failure paths.
+### 3. High Mark Design Tips
+* Follow MVC strictly.
+* Keep business logic in model package.
+* Use HashMap for users, rooms and bookings.
+* Use HashMap for users, rooms and bookings.
+* Use LocalDate and LocalTime.
+* Use enums instead of raw strings.
+* Generate IDs U001/R001/B001.
+* Centralize permission checking.
+* Validate before modifying data.
+* Handle all errors gracefully.
+* Test success paths and failure paths.
 
-4. Critical Marking Considerations
-• Unit testing is performed on hk.edu.polyu.comp.comp2021.crobs.model package.
-• Aim for 90%+ line coverage.
-• Coverage marks are multiplied by requirement completion percentage.
-• Error handling directly affects design marks.
-• Object-Oriented design, inheritance and extensibility are assessed.
+### 4. Critical Marking Considerations
+* Unit testing is performed on hk.edu.polyu.comp.comp2021.crobs.model package.
+* Aim for 90%+ line coverage.
+* Coverage marks are multiplied by requirement completion percentage.
+* Error handling directly affects design marks.
+* Object-Oriented design, inheritance and extensibility are assessed.
