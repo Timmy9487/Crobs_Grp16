@@ -9,7 +9,18 @@ import hk.edu.polyu.comp.comp2021.crobs.model.room.Room;
 import hk.edu.polyu.comp.comp2021.crobs.model.user.User;
 
 import java.util.List;
-
+/**
+ * CommandProcessor
+ *
+ * Responsibilities:
+ * - Receives raw command strings from CROBS
+ * - Routes commands to the corresponding module
+ * - Handles command-level validation
+ * - Displays user-friendly error messages
+ *
+ * REQ18:
+ * - Handles "quit" command by calling CROBS.quit()
+ */
 public class CommandProcessor {
 
     private final CROBS crobs;
@@ -26,7 +37,16 @@ public class CommandProcessor {
 
         String[] tokens = commandLine.trim().split("\\s+");
         String cmd = tokens[0];
-
+        // ============================================================
+        // REQ18: quit
+        // Terminates the current CROBS session.
+        // The actual termination is handled by CROBS.quit().
+        // ============================================================
+        if (cmd.equalsIgnoreCase("quit")) {
+            crobs.quit();
+            return;
+        }
+        
         try {
             if (handleRoomCommand(cmd, tokens)) return;
             if (handleUserCommand(cmd, tokens)) return;
