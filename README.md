@@ -18,8 +18,8 @@ Infrastructure, Logging, Testing & Integration ( testing, B1-2)
 ### 1. Complete Project Structure
 ```
 [x]: completed
-[o]: created, needs to be added to
-[?]: incomplete
+[o]: incomplete
+[?]: To be discussed
 
 note for CROBS.java: i might have missed an import so should double check later
 ```
@@ -35,7 +35,7 @@ crobs
 │   [x]└── LogManager.java
 │
 ├── model
-│   ├── [?] CROBS.java
+│   ├── [o] CROBS.java
 │   │
 │   ├── user
 │   │   ├── User.java
@@ -55,7 +55,7 @@ crobs
 │
 ├── [x] command
 │   ├──[x]ParsedCommand.java
-│   ├──[x] CommandProcessor.java
+│   ├──[o] CommandProcessor.java
 │   └──[x] CommandParser.java
 │   │
 │   ├── [o]Command.java          (BON2)
