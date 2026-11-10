@@ -47,8 +47,26 @@ crobs
 │       └── UserRole.java
 │
 ├── [o] command
+│   ├──ParsedCommand.java
 │   ├── [o] CommandProcessor.java
 │   └── CommandParser.java
+│   │
+│   ├── [o]Command.java          (BON2)
+│   │
+│   ├── AddUserCommand.java
+│   ├── RemoveUserCommand.java│
+│   ├── ChangeRoleCommand.java
+│   │
+│   ├── AddRoomCommand.java
+│   ├── ModifyRoomCommand.java
+│   └── DeleteRoomCommand.java
+│   │
+│   ├── BookCommand.java
+│   ├── ModifyBookingCommand.java
+│   └── DeleteBookingCommand.java
+│
+├── [o]undo
+│   └──[o] UndoManager.java
 │
 ├── service
 │   ├── UserService.java
