@@ -56,6 +56,8 @@ public class CommandProcessor {
 
         } catch (PermissionDeniedException | RoomNotFoundException | InvalidCommandException e) {
             System.out.println("Error: " + e.getMessage());
+        } catch (IllegalArgumentException | java.time.DateTimeException e) {
+            System.out.println("Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Error: Unexpected error occurred: " + e.getMessage());
         }
@@ -145,17 +147,103 @@ public class CommandProcessor {
     // =========================================================================
     // BOOKING & SEARCH MODULE (REQ 10, 11, 12, 13, 14, 17)
     // =========================================================================
-    private boolean handleBookingCommand(String cmd, String[] args) throws Exception {
-        switch (cmd) {
-            case "book":
-            case "modifyBooking":
-            case "deleteBooking":
-            case "search":
-            case "schedule":
-            case "listBookings":
-                return true;
-            default:
-                return false;
-        }
+  private boolean handleBookingCommand(String cmd, String[] args) throws Exception {
+    User user = crobs.getCurrentUser();
+    hk.edu.polyu.comp.comp2021.crobs.manager.BookingManager bm = crobs.getBookingManager();
+    switch (cmd) {
+      case "book":
+        minimum(args, 6);
+        printBooking(
+            bm.book(user, args[1], date(args[2]), time(args[3]), time(args[4]), purpose(args, 5)));
+        return true;
+      case "modifyBooking":
+        minimum(args, 7);
+        printBooking(
+            bm.modifyBooking(
+                user,
+                args[1],
+                args[2],
+                date(args[3]),
+                time(args[4]),
+                time(args[5]),
+                purpose(args, 6)));
+        return true;
+      case "deleteBooking":
+        count(args, 2);
+        bm.deleteBooking(user, args[1]);
+        System.out.println("Booking cancelled: " + args[1]);
+        return true;
+      case "search":
+        count(args, 6);
+        List<Room> found =
+            crobs
+                .getSearchService()
+                .search(
+                    user,
+                    date(args[1]),
+                    time(args[2]),
+                    time(args[3]),
+                    Integer.parseInt(args[4]),
+                    args[5].equals("-")
+                        ? java.util.Collections.emptyList()
+                        : java.util.Arrays.asList(args[5].split(",")));
+        if (found.isEmpty()) System.out.println("No available rooms.");
+        for (Room r : found) printRoom(r);
+        return true;
+      case "schedule":
+        count(args, 3);
+        printBookings(bm.getSchedule(user, args[1], date(args[2])));
+        return true;
+      case "listBookings":
+        count(args, 1);
+        printBookings(bm.listBookings(user));
+        return true;
+      default:
+        return false;
     }
+  }
+
+  private static void count(String[] args, int n) {
+    if (args.length != n)
+      throw new IllegalArgumentException("Incorrect number of arguments for " + args[0]);
+  }
+
+  private static void minimum(String[] args, int n) {
+    if (args.length < n) throw new IllegalArgumentException("Missing arguments for " + args[0]);
+  }
+
+  private static java.time.LocalDate date(String s) {
+    return java.time.LocalDate.parse(s);
+  }
+
+  private static java.time.LocalTime time(String s) {
+    return java.time.LocalTime.parse(s);
+  }
+
+  private static String purpose(String[] args, int offset) {
+    return String.join(" ", java.util.Arrays.copyOfRange(args, offset, args.length));
+  }
+
+  private static void printBooking(hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking b) {
+    System.out.println(
+        b.getBookingId()
+            + " "
+            + b.getRoomId()
+            + " "
+            + b.getDate()
+            + " "
+            + b.getStartTime()
+            + " "
+            + b.getEndTime()
+            + " owner="
+            + b.getUserId()
+            + " "
+            + b.getPurpose());
+  }
+
+  private static void printBookings(
+      List<hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking> list) {
+    if (list.isEmpty()) System.out.println("No bookings.");
+    for (hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking b : list) printBooking(b);
+  }
 }

@@ -69,6 +69,7 @@ public class CROBS {
         userManager = new UserManager();
         roomManager = new RoomManager();
         bookingManager = new BookingManager();
+        bookingManager.setRoomManager(roomManager);
 
         /*
          * Allows RoomManager to access bookings.
