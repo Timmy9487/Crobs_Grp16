@@ -46,8 +46,10 @@ crobs
 │   │   ├── [x] Room.java
 │   │   └── [x] RoomType.java
 │   │
-│   ├── booking
-│   │   └── Booking.java (REQ10-14,17)
+│   ├── [x] booking
+│   │   └── [x] Booking.java (REQ10-14,17)
+│   │   └── [x] BookingRegistry.java
+│   │   └── [x] RoomSearch.java
 │   │
 │   └── [x] enums
 │       [x] └── UserRole.java
