@@ -3,12 +3,15 @@ package hk.edu.polyu.comp.comp2021.crobs.command;
 import hk.edu.polyu.comp.comp2021.crobs.exception.InvalidCommandException;
 import hk.edu.polyu.comp.comp2021.crobs.exception.PermissionDeniedException;
 import hk.edu.polyu.comp.comp2021.crobs.exception.RoomNotFoundException;
+import hk.edu.polyu.comp.comp2021.crobs.exception.UserNotFoundException;
 import hk.edu.polyu.comp.comp2021.crobs.manager.RoomManager;
+import hk.edu.polyu.comp.comp2021.crobs.manager.UserManager;
 import hk.edu.polyu.comp.comp2021.crobs.model.CROBS;
 import hk.edu.polyu.comp.comp2021.crobs.model.room.Room;
 import hk.edu.polyu.comp.comp2021.crobs.model.user.User;
 
 import java.util.List;
+import java.util.Arrays;
 /**
  * CommandProcessor
  *
@@ -54,7 +57,7 @@ public class CommandProcessor {
 
             System.out.println("Error: Unknown command '" + cmd + "'");
 
-        } catch (PermissionDeniedException | RoomNotFoundException | InvalidCommandException e) {
+        } catch (PermissionDeniedException | RoomNotFoundException | InvalidCommandException | UserNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (IllegalArgumentException | java.time.DateTimeException e) {
             System.out.println("Error: " + e.getMessage());
@@ -66,14 +69,56 @@ public class CommandProcessor {
     // =========================================================================
     // USER MODULE (REQ 2, 3, 4, 5, 6)
     // =========================================================================
-    private boolean handleUserCommand(String cmd, String[] args) throws Exception {
+    private boolean handleUserCommand(String cmd, String[] args)
+            throws PermissionDeniedException, UserNotFoundException {
+
+        UserManager um = crobs.getUserManager();
+
         switch (cmd) {
             case "addUser":
-            case "removeUser":
-            case "changeRole":
-            case "login":
-            case "logout":
+                if (args.length < 2) {
+                    System.out.println("Error: Usage: addUser name");
+                } else {
+                    String fullName = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                    um.addUser(fullName);
+                }
                 return true;
+
+            case "removeUser":
+                if (args.length < 2) {
+                    System.out.println("Error: Usage: removeUser targetUserID");
+                } else {
+                    um.removeUser(args[1]);
+                    crobs.setCurrentUser(um.getCurrentUser()); // Defensive sync
+                }
+                return true;
+
+            case "changeRole":
+                if (args.length < 3) {
+                    System.out.println("Error: Usage: changeRole targetUserID newRole");
+                } else {
+                    um.changeRole(args[1], args[2]);
+                    crobs.setCurrentUser(um.getCurrentUser()); // Sync for self-demotion
+                }
+                return true;
+
+            case "login":
+                if (args.length < 2) {
+                    System.out.println("Error: Usage: login userID");
+                } else if (um.getCurrentUser() != null) {
+                    System.out.println("Error: Already logged in as "
+                            + um.getCurrentUser().getName() + ". Log out first.");
+                } else {
+                    um.login(args[1]);
+                    crobs.setCurrentUser(um.getCurrentUser()); // Sync to CROBS
+                }
+                return true;
+
+            case "logout":
+                um.logout();
+                crobs.setCurrentUser(null); // Sync to CROBS
+                return true;
+
             default:
                 return false;
         }
