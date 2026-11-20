@@ -134,4 +134,76 @@ public class BookingRegistry {
             b.getRoomId().equals(id)
                 && LocalDateTime.of(b.getDate(), b.getStartTime()).isAfter(now));
   }
+  /**
+   * Returns all future bookings for a room.
+   * Used by DeleteRoomCommand before deletion.
+   */
+  public List<Booking> getFutureBookingsForRoom(String roomId) {
+
+    LocalDateTime now = LocalDateTime.now();
+
+    List<Booking> result = new ArrayList<>();
+
+    for (Booking b : bookings.values()) {
+
+      if (b.getRoomId().equals(roomId)
+              && LocalDateTime.of(
+              b.getDate(),
+              b.getStartTime()
+      ).isAfter(now)) {
+
+        result.add(b);
+      }
+    }
+
+    return result;
+  }
+  /**
+   * Restores a previously deleted booking.
+   * Used by BON2 undo.
+   */
+  public void restoreBooking(Booking booking) {
+
+    if (booking == null) {
+      throw new IllegalArgumentException(
+              "Cannot restore null booking."
+      );
+    }
+
+    bookings.put(
+            booking.getBookingId(),
+            booking
+    );
+  }
+  /**
+   * Returns a booking by its ID.
+   */
+  public Booking getBooking(String bookingId) {
+    return bookings.get(bookingId);
+  }
+  /**
+   * Deletes a booking directly without ownership checks.
+   * Used by BookCommand undo().
+   */
+  public void deleteBookingDirect(String bookingId) {
+    bookings.remove(bookingId);
+  }
+  public List<Booking> getBookingsForUser(
+          String userId) {
+
+    List<Booking> result =
+            new ArrayList<>();
+
+    for (Booking booking :
+            bookings.values()) {
+
+      if (booking.getUserId()
+              .equals(userId)) {
+
+        result.add(booking);
+      }
+    }
+
+    return result;
+  }
 }

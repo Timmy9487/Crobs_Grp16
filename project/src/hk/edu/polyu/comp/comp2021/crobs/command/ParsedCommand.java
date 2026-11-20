@@ -1,9 +1,17 @@
-
 package hk.edu.polyu.comp.comp2021.crobs.command;
 
-/*Store the parsed command name
-+
-Store its arguments*/
+/**
+ * Immutable representation of a parsed command.
+ *
+ * Example:
+ *
+ * Input:
+ *   addRoom seminarRoom 40 projector
+ *
+ * ParsedCommand:
+ *   commandName = "addRoom"
+ *   arguments = {"seminarRoom", "40", "projector"}
+ */
 public class ParsedCommand {
 
     private final String commandName;
@@ -26,3 +34,4 @@ public class ParsedCommand {
         return arguments;
     }
 }
+

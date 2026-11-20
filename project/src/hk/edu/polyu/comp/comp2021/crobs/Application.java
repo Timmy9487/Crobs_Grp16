@@ -27,15 +27,12 @@ public class Application {
         }
 
         // Basic validation
-        if (htmlLogPath == null || txtLogPath == null) {
+        if (htmlLogPath == null) {
+            htmlLogPath = "crobs_log.html";
+        }
 
-            System.out.println(
-                    "Usage: java Application "
-                    + "-html <htmlLogFile> "
-                    + "-txt <txtLogFile>"
-            );
-
-            return;
+        if (txtLogPath == null) {
+            txtLogPath = "crobs_log.txt";
         }
 
         try {

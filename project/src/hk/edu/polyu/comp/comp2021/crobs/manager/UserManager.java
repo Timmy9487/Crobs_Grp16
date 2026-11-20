@@ -50,18 +50,37 @@ public class UserManager {
         }
     }
 
-    public void addUser(String name) throws PermissionDeniedException {
+    public User addUser(String name)
+            throws PermissionDeniedException {
+
         checkPermission(UserRole.ADMIN_USER);
 
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("User name cannot be empty.");
+            throw new IllegalArgumentException(
+                    "User name cannot be empty.");
         }
 
-        String newId = IDGenerator.generateUserId();
-        RegularUser newUser = new RegularUser(newId, name);
-        users.put(newId, newUser);
+        String newId =
+                IDGenerator.generateUserId();
 
-        System.out.println("Success: Added user " + name + " with ID " + newId);
+        RegularUser newUser =
+                new RegularUser(
+                        newId,
+                        name
+                );
+
+        users.put(
+                newId,
+                newUser
+        );
+
+        System.out.println(
+                "Success: Added user "
+                        + name
+                        + " with ID "
+                        + newId);
+
+        return newUser;
     }
 
     public void removeUser(String targetUserID) throws PermissionDeniedException, UserNotFoundException {
@@ -111,7 +130,29 @@ public class UserManager {
     public User getCurrentUser() {
         return currentUser;
     }
+    /**
+     * Returns the user with the specified ID.
+     * Used by BON2 command classes.
+     */
+    public User getUser(String userId) {
+        return users.get(userId);
+    }
+    /**
+     * Restores a previously deleted user.
+     * Used by undo operations.
+     */
+    public void restoreUser(User user) {
 
+        if (user == null) {
+            throw new IllegalArgumentException(
+                    "Cannot restore a null user.");
+        }
+
+        users.put(
+                user.getUserId(),
+                user
+        );
+    }
     private void checkPermission(UserRole requiredRole) throws PermissionDeniedException {
         if (currentUser == null) {
             throw new PermissionDeniedException("You must be logged in to perform this action.");

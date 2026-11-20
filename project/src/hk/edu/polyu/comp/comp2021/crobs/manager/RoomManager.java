@@ -188,11 +188,61 @@ public class RoomManager {
         return list;
     }
 
-    public Room getRoomById(String roomId) {
+    /**
+     * Returns a room by its ID.
+     * Used by REQs and BON2 command classes.
+     */
+    public Room getRoom(String roomId) {
         return roomMap.get(roomId);
     }
 
-    public Map<String, Room> getAllRoomsMap() {
-        return roomMap;
+    /**
+     * Backward-compatible alias.
+     */
+    public Room getRoomById(String roomId) {
+        return getRoom(roomId);
     }
+
+    /**
+     * Restores a previously deleted room.
+     * Used by DeleteRoomCommand undo().
+     */
+    public void restoreRoom(Room room) {
+
+        if (room == null) {
+            throw new IllegalArgumentException(
+                    "Cannot restore a null room."
+            );
+        }
+
+        roomMap.put(
+                room.getRoomId(),
+                room
+        );
+    }
+
+    /**
+     * Removes a room directly without checking permissions.
+     * Used by AddRoomCommand undo().
+     */
+    public void removeRoomDirect(String roomId) {
+
+        if (roomId == null) {
+            return;
+        }
+
+        roomMap.remove(roomId);
+    }
+
+    /**
+     * Returns all rooms as a read-only map.
+     * Used by REQ13 search.
+     */
+    public Map<String, Room> getAllRoomsMap() {
+
+        return Collections.unmodifiableMap(
+                roomMap
+        );
+    }
+
 }
