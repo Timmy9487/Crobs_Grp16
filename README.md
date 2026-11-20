@@ -4,14 +4,13 @@
 
 ### COMPLETED
 [25089289D] Candice: Room Module (R7-9, R15-16)
-[25081767D] Tim:REQ1,REQ18
+[25081767D] Tim: logging (REQ1,REQ18  B1-2)
+Booking & Search Module (R10-14,17)
 >> **check [CHANGELOG.md](CHANGELOG.md)**
 
 ### TO-DO
 
-Booking & Search Module (R10-14,17)
-
-Infrastructure, Logging, Testing & Integration ( testing, B1-2)
+Infrastructure, Testing & Integration
 
 ---
 ### 1. Complete Project Structure
