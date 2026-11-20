@@ -8,7 +8,6 @@
 >> **check [CHANGELOG.md](CHANGELOG.md)**
 
 ### TO-DO
-User & Permission Module (R2-6)
 
 Booking & Search Module (R10-14,17)
 
@@ -37,11 +36,11 @@ crobs
 ├── model
 │   ├── [o] CROBS.java
 │   │
-│   ├── user
-│   │   ├── User.java
-│   │   ├── RegularUser.java
-│   │   ├── AdminUser.java
-│   │   └── SuperAdmin.java
+│   ├── [x] user
+│   │   [x] ├── User.java
+│   │   [x] ├── RegularUser.java
+│   │   [x] ├── AdminUser.java
+│   │   [x] └── SuperAdmin.java
 │   │
 │   ├── [x] room
 │   │   ├── [x] Room.java
@@ -50,8 +49,8 @@ crobs
 │   ├── booking
 │   │   └── Booking.java
 │   │
-│   └── enums
-│       └── UserRole.java
+│   └── [x] enums
+│       [x] └── UserRole.java
 │
 ├── [o] command
 │   ├──[x]ParsedCommand.java
