@@ -47,7 +47,7 @@ crobs
 │   │   └── [x] RoomType.java
 │   │
 │   ├── booking
-│   │   └── Booking.java
+│   │   └── Booking.java (REQ10-14,17)
 │   │
 │   └── [x] enums
 │       [x] └── UserRole.java
@@ -59,43 +59,41 @@ crobs
 │   │
 │   ├── [o]Command.java          (BON2)
 │   │
-│   ├── AddUserCommand.java
-│   ├── RemoveUserCommand.java│
-│   ├── ChangeRoleCommand.java
+│   ├── AddUserCommand.java (B2,2)
+│   ├── RemoveUserCommand.java│ (B2,3)
+│   ├── ChangeRoleCommand.java (B2,4)
 │   │
-│   ├── AddRoomCommand.java
-│   ├── ModifyRoomCommand.java
-│   └── DeleteRoomCommand.java
+│   ├── AddRoomCommand.java (B2,7)
+│   ├── ModifyRoomCommand.java (B2,8)
+│   └── DeleteRoomCommand.java (B2,9)
 │   │
-│   ├── BookCommand.java
-│   ├── ModifyBookingCommand.java
-│   └── DeleteBookingCommand.java
+│   ├── BookCommand.java (B2,10)
+│   ├── ModifyBookingCommand.java (B2,11)
+│   └── DeleteBookingCommand.java (B2,12)
 │
 ├── [o]undo
 │   └──[o] UndoManager.java
 │
-├── service
-│   ├── UserService.java
-│   ├── RoomService.java
-│   ├── BookingService.java
-│   └── SearchService.java
+├── [x]service
+│   └── [x]SearchService.java
 │
 ├── [o] manager
-│   ├── UserManager.java
+│   ├── [x] UserManager.java
 │   ├── [x] RoomManager.java
-│   └── BookingManager.java
+│   └── [x] BookingManager.java
 │
 ├── [o] exception
 │   ├── [x] PermissionDeniedException.java
 │   ├── [x] InvalidCommandException.java
-│   ├── UserNotFoundException.java 
+│   ├── [x] UserNotFoundException.java (REQ 2-6)
 │   ├── [x] RoomNotFoundException.java
-│   └── BookingNotFoundException.java
+│   ├── BookingNotFoundException.java (10-17)
+│   └── BookingConflictException.java (REQ10,11)
 │
 └── [o] util
     ├── [x] IDGenerator.java
-    ├── DateUtil.java
-    └── ValidationUtil.java
+    ├── DateUtil.java (REQ10-14,17)
+    └── ValidationUtil.java (REQ2-18)
 ```
    
 ### 2. Requirement Mapping
