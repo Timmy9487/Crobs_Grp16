@@ -25,7 +25,7 @@ note for CROBS.java: i might have missed an import so should double check later
 ```
 crobs
 │
-├── [?] Application.java
+├── [x] Application.java
 │
 ├──[x]logging
 │   [x]├── Logger.java
@@ -54,30 +54,32 @@ crobs
 │   └── [x] enums
 │       [x] └── UserRole.java
 │
-├── [o] command
+├── [x] command
 │   ├──[x]ParsedCommand.java
-│   ├──[o] CommandProcessor.java
+│   ├──[x] CommandProcessor.java
 │   └──[x] CommandParser.java
 │   │
-│   ├── [o]Command.java          (BON2)
+│   ├── [x]Command.java          (BON2)
 │   │
-│   ├── AddUserCommand.java (B2,2)
-│   ├── RemoveUserCommand.java│ (B2,3)
-│   ├── ChangeRoleCommand.java (B2,4)
+│   ├── [x] AddUserCommand.java (B2,2)
+│   ├── [x] RemoveUserCommand.java│ (B2,3)
+│   ├── [x] ChangeRoleCommand.java (B2,4)
 │   │
-│   ├── AddRoomCommand.java (B2,7)
-│   ├── ModifyRoomCommand.java (B2,8)
-│   └── DeleteRoomCommand.java (B2,9)
+│   ├── [x] AddRoomCommand.java (B2,7)
+│   ├── [x] ModifyRoomCommand.java (B2,8)
+│   └── [x] DeleteRoomCommand.java (B2,9)
 │   │
-│   ├── BookCommand.java (B2,10)
-│   ├── ModifyBookingCommand.java (B2,11)
-│   └── DeleteBookingCommand.java (B2,12)
+│   ├── [x] BookCommand.java (B2,10)
+│   ├── [x] ModifyBookingCommand.java (B2,11)
+│   └── [x] DeleteBookingCommand.java (B2,12)
 │
 ├── [o]undo
 │   └──[o] UndoManager.java
 │
+├── [x] service
+│   └──[x] SearchService.java
 │
-├── [o] manager
+├── [x] manager
 │   ├── [x] UserManager.java
 │   ├── [x] RoomManager.java
 │   └── [x] BookingManager.java
