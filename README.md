@@ -76,8 +76,6 @@ crobs
 ├── [o]undo
 │   └──[o] UndoManager.java
 │
-├── [x]service
-│   └── [x]SearchService.java
 │
 ├── [o] manager
 │   ├── [x] UserManager.java
@@ -94,7 +92,6 @@ crobs
 │
 └── [o] util
     ├── [x] IDGenerator.java
-    ├── DateUtil.java (REQ10-14,17)
     └── ValidationUtil.java (REQ2-18)
 ```
    
