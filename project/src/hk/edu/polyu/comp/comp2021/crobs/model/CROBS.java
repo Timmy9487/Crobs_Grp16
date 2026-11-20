@@ -66,9 +66,9 @@ public class CROBS {
         this.logManager = logManager;
 
         // Create managers
-        userManager = new UserManager();
         roomManager = new RoomManager();
         bookingManager = new BookingManager();
+        userManager = new UserManager(bookingManager);
         bookingManager.setRoomManager(roomManager);
 
         /*
