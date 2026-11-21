@@ -87,13 +87,12 @@ crobs
 │   ├── [x] PermissionDeniedException.java
 │   ├── [x] InvalidCommandException.java
 │   ├── [x] UserNotFoundException.java (REQ 2-6)
-│   ├── [x] RoomNotFoundException.java
-│   ├── BookingNotFoundException.java (10-17)
-│   └── BookingConflictException.java (REQ10,11)
+│   └── [x] RoomNotFoundException.java
+│  
 │
 └── [o] util
-    ├── [x] IDGenerator.java
-    └── ValidationUtil.java (REQ2-18)
+    └── [x] IDGenerator.java
+    
 ```
    
 ### 2. Requirement Mapping
