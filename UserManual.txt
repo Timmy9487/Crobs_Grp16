@@ -1,0 +1,580 @@
+CROBS USER MANUAL
+
+==================================================
+1. INTRODUCTION
+==================================================
+
+CROBS (Classroom Room Booking System) is a command-line
+room booking management system developed for COMP2021.
+
+The system supports:
+
+• User management
+• Room management
+• Room booking
+• Room searching
+• Weekly schedule viewing
+• Command logging
+• Undo / Redo functionality
+
+==================================================
+2. STARTING THE SYSTEM
+==================================================
+
+2.1 Running the Program
+
+With Explicit Log Files
+
+java hk.edu.polyu.comp.comp2021.crobs.Application \
+-html log.html \
+-txt log.txt
+
+
+The system will create:
+
+log.html
+log.txt
+
+to store session logs.
+
+--------------------------------------------------
+
+Without Arguments
+
+The system automatically creates:
+
+crobs_log.html
+crobs_log.txt
+
+and starts normally.
+
+==================================================
+3. STARTUP SCREEN
+==================================================
+
+Example:
+
+=================================
+Welcome to CROBS
+Classroom Room Booking System
+Default SuperAdmin ID: U000
+Type 'help' to view commands.
+=================================
+
+CROBS>
+
+==================================================
+4. USER ROLES
+==================================================
+
+4.1 Regular User
+
+Can:
+
+• Login
+• Logout
+• Search available rooms
+• Create bookings
+• Modify own bookings
+• Delete own bookings
+• View schedules
+• View own bookings
+
+--------------------------------------------------
+
+4.2 Admin User
+
+Can perform all Regular User operations plus:
+
+• Add users
+• Remove users
+• Add rooms
+• Modify rooms
+• Delete rooms
+
+--------------------------------------------------
+
+4.3 SuperAdmin
+
+Can perform all Admin operations plus:
+
+• Change user roles
+
+==================================================
+5. USER MANAGEMENT COMMANDS
+==================================================
+
+--------------------------------------------------
+REQ5 - Login
+--------------------------------------------------
+
+Syntax:
+
+login userID
+
+Example:
+
+login U000
+
+--------------------------------------------------
+REQ6 - Logout
+--------------------------------------------------
+
+Syntax:
+
+logout
+
+--------------------------------------------------
+REQ2 - Add User
+--------------------------------------------------
+
+Syntax:
+
+addUser name
+
+Example:
+
+addUser Alice Chan
+
+Output:
+
+Success: Added user Alice Chan with ID U001
+
+--------------------------------------------------
+REQ3 - Remove User
+--------------------------------------------------
+
+Syntax:
+
+removeUser targetUserID
+
+Example:
+
+removeUser U003
+
+Effect:
+
+• Removes the user
+• Cancels all bookings owned by that user
+
+--------------------------------------------------
+REQ4 - Change Role
+--------------------------------------------------
+
+Syntax:
+
+changeRole targetUserID newRole
+
+Example:
+
+changeRole U003 ADMIN_USER
+
+Supported Roles:
+
+REGULAR_USER
+ADMIN_USER
+SUPERADMIN
+
+==================================================
+6. ROOM MANAGEMENT COMMANDS
+==================================================
+
+--------------------------------------------------
+REQ7 - Add Room
+--------------------------------------------------
+
+Syntax:
+
+addRoom roomType capacity features
+
+Example:
+
+addRoom meetingRoom 10 projector,whiteboard
+
+Supported Room Types:
+
+lectureTheatre
+computerLab
+seminarRoom
+meetingRoom
+
+Output:
+
+Room added successfully.
+
+--------------------------------------------------
+REQ8 - Modify Room
+--------------------------------------------------
+
+Syntax:
+
+modifyRoom roomID field newValue
+
+Example:
+
+modifyRoom R001 capacity 50
+
+Supported Fields:
+
+roomType
+capacity
+features
+
+--------------------------------------------------
+REQ9 - Delete Room
+--------------------------------------------------
+
+Syntax:
+
+deleteRoom roomID
+
+Example:
+
+deleteRoom R001
+
+Effect:
+
+• Deletes the room
+• Cancels future bookings for that room
+
+--------------------------------------------------
+REQ15 - List Room
+--------------------------------------------------
+
+Syntax:
+
+listRoom roomID
+
+Example:
+
+listRoom R001
+
+Example Output:
+
+R001 meetingRoom 10 projector,whiteboard
+
+--------------------------------------------------
+REQ16 - List All Rooms
+--------------------------------------------------
+
+Syntax:
+
+listAllRooms
+
+Example Output:
+
+R001 meetingRoom 10 projector
+R002 seminarRoom 40 wifi,projector
+
+Rooms are sorted by Room ID.
+
+==================================================
+7. BOOKING MANAGEMENT COMMANDS
+==================================================
+
+--------------------------------------------------
+REQ10 - Create Booking
+--------------------------------------------------
+
+Syntax:
+
+book roomID date startTime endTime purpose
+
+Example:
+
+book R001 2027-01-15 09:00 11:00 COMP2021 Meeting
+
+Output:
+
+Booking created.
+
+--------------------------------------------------
+REQ11 - Modify Booking
+--------------------------------------------------
+
+Syntax:
+
+modifyBooking bookingID roomID date startTime endTime purpose
+
+Example:
+
+modifyBooking B001 R001 2027-01-16 09:00 10:00 Project Discussion
+
+Output:
+
+Booking modified.
+
+--------------------------------------------------
+REQ12 - Delete Booking
+--------------------------------------------------
+
+Syntax:
+
+deleteBooking bookingID
+
+Example:
+
+deleteBooking B001
+
+Output:
+
+Booking cancelled: B001
+
+--------------------------------------------------
+REQ17 - List My Bookings
+--------------------------------------------------
+
+Syntax:
+
+listBookings
+
+Example Output:
+
+B001 R001 2027-01-15 09:00 11:00 owner=U001 Project Meeting
+
+Bookings are sorted by:
+
+1. Date
+2. Start Time
+3. Booking ID
+
+==================================================
+8. ROOM SEARCH
+==================================================
+
+--------------------------------------------------
+REQ13 - Search Available Rooms
+--------------------------------------------------
+
+Syntax:
+
+search date startTime endTime minCapacity features
+
+Example:
+
+search 2027-01-15 09:00 11:00 20 projector,wifi
+
+Example Without Feature Requirement:
+
+search 2027-01-15 09:00 11:00 20 -
+
+Search Conditions:
+
+Returned rooms must:
+
+• Have capacity >= minCapacity
+• Contain all requested features
+• Be available during the requested period
+
+==================================================
+9. WEEKLY SCHEDULE
+==================================================
+
+--------------------------------------------------
+REQ14 - Weekly Schedule
+--------------------------------------------------
+
+Syntax:
+
+schedule roomID weekStartDate
+
+Example:
+
+schedule R001 2027-01-11
+
+Effect:
+
+Displays all bookings during:
+
+weekStartDate
+through
+weekStartDate + 6 days
+
+==================================================
+10. UNDO / REDO (BONUS 2)
+==================================================
+
+Supported Commands:
+
+addUser
+removeUser
+changeRole
+
+addRoom
+modifyRoom
+deleteRoom
+
+book
+modifyBooking
+deleteBooking
+
+--------------------------------------------------
+Undo
+--------------------------------------------------
+
+Syntax:
+
+undo
+
+Example:
+
+addRoom meetingRoom 10 projector
+
+undo
+
+Effect:
+
+Reverses the previous operation.
+
+--------------------------------------------------
+Redo
+--------------------------------------------------
+
+Syntax:
+
+redo
+
+Example:
+
+undo
+
+redo
+
+Effect:
+
+Re-applies the previously undone operation.
+
+==================================================
+11. LOGGING
+==================================================
+
+All commands entered during a CROBS session are
+recorded automatically.
+
+--------------------------------------------------
+TXT Log
+--------------------------------------------------
+
+Example:
+
+login U000
+addUser Alice
+addRoom meetingRoom 10 projector
+book R001 2027-01-15 09:00 11:00 Meeting
+quit
+
+--------------------------------------------------
+HTML Log
+--------------------------------------------------
+
+Example:
+
+<table>
+<tr>
+    <th>Operation Index</th>
+    <th>Command</th>
+</tr>
+
+<tr>
+    <td>1</td>
+    <td>login U000</td>
+</tr>
+</table>
+
+==================================================
+12. HELP COMMAND
+==================================================
+
+Syntax:
+
+help
+
+Displays all supported commands available
+in CROBS.
+
+==================================================
+13. QUIT
+==================================================
+
+Syntax:
+
+quit
+
+Example:
+
+quit
+
+Output:
+
+CROBS terminated.
+
+==================================================
+14. ERROR HANDLING
+==================================================
+
+The system handles the following errors:
+
+Permission Errors
+
+Permission denied.
+
+--------------------------------------------------
+
+Login Errors
+
+User does not exist.
+
+--------------------------------------------------
+
+Room Errors
+
+Room does not exist.
+
+--------------------------------------------------
+
+Booking Errors
+
+Unknown booking.
+
+--------------------------------------------------
+
+Command Errors
+
+Incorrect number of arguments.
+
+--------------------------------------------------
+
+Input Errors
+
+Invalid room type.
+Invalid capacity.
+Invalid date.
+Invalid time.
+
+==================================================
+15. EXAMPLE SESSION
+==================================================
+
+login U000
+
+addUser Alice
+
+addRoom meetingRoom 10 projector
+
+listAllRooms
+
+book R001 2027-01-15 09:00 11:00 Team Meeting
+
+listBookings
+
+undo
+
+redo
+
+logout
+
+quit
+
+==================================================
+END OF USER MANUAL
+==================================================
