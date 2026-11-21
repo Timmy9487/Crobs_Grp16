@@ -11,9 +11,9 @@ import hk.edu.polyu.comp.comp2021.crobs.model.room.Room;
 import hk.edu.polyu.comp.comp2021.crobs.model.user.User;
 import hk.edu.polyu.comp.comp2021.crobs.undo.UndoManager;
 
-
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
+
 /**
  * CommandProcessor
  *
@@ -60,6 +60,12 @@ public class CommandProcessor {
         if (commandLine.equalsIgnoreCase("redo")) {
 
             undoManager.redo();
+
+            return;
+        }
+        if (commandLine.equalsIgnoreCase("help")) {
+
+            printHelp();
 
             return;
         }
@@ -134,6 +140,9 @@ public class CommandProcessor {
                             );
 
                     undoManager.executeCommand(addUserCommand);
+                    System.out.println(
+                            "User added successfully."
+                    );
                 }
                 return true;
 
@@ -150,6 +159,9 @@ public class CommandProcessor {
 
                     undoManager.executeCommand(removeUserCommand);
                     crobs.setCurrentUser(um.getCurrentUser()); // Defensive sync
+                    System.out.println(
+                            "User removed successfully."
+                    );
                 }
                 return true;
 
@@ -166,6 +178,9 @@ public class CommandProcessor {
 
                     undoManager.executeCommand(changeRoleCommand);
                     crobs.setCurrentUser(um.getCurrentUser()); // Sync for self-demotion
+                    System.out.println(
+                            "Role changed successfully."
+                    );
                 }
                 return true;
 
@@ -196,7 +211,9 @@ public class CommandProcessor {
     // =========================================================================
     private boolean handleRoomCommand(String cmd, String[] args) throws Exception {
         RoomManager rm = crobs.getRoomManager();
-        User user = crobs.getCurrentUser();
+        User user =
+                crobs.getUserManager()
+                        .getCurrentUser();
 
         switch (cmd) {
             case "addRoom": // REQ7: addRoom roomType capacity features
@@ -292,7 +309,9 @@ public class CommandProcessor {
     // BOOKING & SEARCH MODULE (REQ 10, 11, 12, 13, 14, 17)
     // =========================================================================
   private boolean handleBookingCommand(String cmd, String[] args) throws Exception {
-    User user = crobs.getCurrentUser();
+      User user =
+              crobs.getUserManager()
+                      .getCurrentUser();
     hk.edu.polyu.comp.comp2021.crobs.manager.BookingManager bm = crobs.getBookingManager();
     switch (cmd) {
       case "book":
@@ -423,4 +442,38 @@ public class CommandProcessor {
     if (list.isEmpty()) System.out.println("No bookings.");
     for (hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking b : list) printBooking(b);
   }
+    private static void printHelp() {
+
+        System.out.println("\n===== CROBS COMMANDS =====");
+
+        System.out.println("\nUser Management:");
+        System.out.println("login <userID>");
+        System.out.println("logout");
+        System.out.println("addUser <name>");
+        System.out.println("removeUser <userID>");
+        System.out.println("changeRole <userID> <role>");
+
+        System.out.println("\nRoom Management:");
+        System.out.println("addRoom <roomType> <capacity> <features>");
+        System.out.println("modifyRoom <roomID> <field> <newValue>");
+        System.out.println("deleteRoom <roomID>");
+        System.out.println("listRoom <roomID>");
+        System.out.println("listAllRooms");
+
+        System.out.println("\nBooking:");
+        System.out.println("book <roomID> <date> <start> <end> <purpose>");
+        System.out.println("modifyBooking <bookingID> ...");
+        System.out.println("deleteBooking <bookingID>");
+        System.out.println("search <date> <start> <end> <capacity> <features>");
+        System.out.println("schedule <roomID> <weekStartDate>");
+        System.out.println("listBookings");
+
+        System.out.println("\nBON2:");
+        System.out.println("undo");
+        System.out.println("redo");
+
+        System.out.println("\nSystem:");
+        System.out.println("help");
+        System.out.println("quit");
+    }
 }
