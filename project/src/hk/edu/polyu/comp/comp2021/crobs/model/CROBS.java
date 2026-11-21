@@ -11,14 +11,14 @@ import hk.edu.polyu.comp.comp2021.crobs.service.SearchService;
 import java.util.Scanner;
 
 /**
- * Main CROBS system class.
+ * Main CROBS System.
  *
  * Responsibilities:
- * - Maintain system state
- * - Hold references to managers/services
- * - Maintain current logged-in user
- * - Run the command loop
- * - Handle REQ18 (quit)
+ * - Initialize managers and services
+ * - Maintain application lifecycle
+ * - Run CLI loop
+ * - Coordinate REQ1 logging
+ * - Coordinate REQ18 termination
  */
 public class CROBS {
 
@@ -27,18 +27,21 @@ public class CROBS {
        =============================== */
 
     private final UserManager userManager;
+
     private final RoomManager roomManager;
+
     private final BookingManager bookingManager;
+
     private final SearchService searchService;
 
     /* ===============================
-       Command Handling
+       Command Processing
        =============================== */
 
     private final CommandProcessor commandProcessor;
 
     /* ===============================
-       Logging (REQ1)
+       Logging
        =============================== */
 
     private final LogManager logManager;
@@ -50,113 +53,107 @@ public class CROBS {
     private User currentUser;
 
     /* ===============================
-       REQ18 Program State
+       Program State
        =============================== */
 
     private boolean running;
 
     /**
-     * Constructor.
-     *
-     * @param logManager handles HTML and TXT logging
+     * System constructor.
      */
     public CROBS(LogManager logManager) {
 
-        // Store logger
         this.logManager = logManager;
 
-        // Create managers
         roomManager = new RoomManager();
+
         bookingManager = new BookingManager();
-        userManager = new UserManager(bookingManager);
-        bookingManager.setRoomManager(roomManager);
 
-        /*
-         * Allows RoomManager to access bookings.
-         * Needed later for REQ9:
-         * deleteRoom() must cancel future bookings.
-         */
-        roomManager.setBookingManager(bookingManager);
+        userManager = new UserManager(
+                bookingManager
+        );
 
-        // Create services
+        bookingManager.setRoomManager(
+                roomManager
+        );
+
+        roomManager.setBookingManager(
+                bookingManager
+        );
+
         searchService =
                 new SearchService(
                         roomManager,
                         bookingManager
                 );
 
-        // Command dispatcher
         commandProcessor =
                 new CommandProcessor(this);
 
-        // Session starts with nobody logged in
         currentUser = null;
 
-        // Program starts running
         running = true;
-
-        // Create default accounts
-        initializeDefaultUsers();
     }
 
     /**
-     * Creates default users.
-     *
-     * Example:
-     * - SUPERADMIN
-     * - initial ADMIN
-     */
-    private void initializeDefaultUsers() {
-
-        // Example implementation later:
-        //
-        // userManager.createSuperAdmin(
-        //      "U000",
-        //      "superadmin");
-    }
-
-    /**
-     * Starts the CLI loop.
-     *
-     * REQ18:
-     * quit -> terminate system
+     * Starts CROBS CLI.
      */
     public void start() {
 
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner =
+                new Scanner(System.in);
 
-        System.out.println("Welcome to CROBS");
+        System.out.println(
+                "\n================================="
+        );
+
+        System.out.println(
+                "Welcome to CROBS"
+        );
+
+        System.out.println(
+                "Classroom Room Booking System"
+        );
+
+        System.out.println(
+                "Default SuperAdmin ID: U000"
+        );
+
+        System.out.println(
+                "Type 'help' to view commands."
+        );
+
+        System.out.println(
+                "=================================\n"
+        );
 
         while (running) {
 
-            System.out.print("> ");
+            System.out.print("CROBS> ");
 
             String command =
                     scanner.nextLine().trim();
 
-            // Ignore empty input
             if (command.isEmpty()) {
                 continue;
             }
 
-            // REQ1:
-            // Log every command entered
-            logManager.log(command);
+            try {
 
-            // REQ18:
-            // quit command
-            if (command.equalsIgnoreCase("quit")) {
+                /* REQ1 */
+                logManager.log(command);
 
-                quit();
+                commandProcessor.process(command);
 
-                continue;
+            } catch (Exception e) {
+
+                System.out.println(
+                        "System Error: "
+                                + e.getMessage()
+                );
             }
-
-            // Process all other commands
-            commandProcessor.process(command);
         }
 
-        // Close log files before program exits
         logManager.close();
 
         scanner.close();
@@ -164,18 +161,18 @@ public class CROBS {
 
     /**
      * REQ18
-     * Terminates CROBS.
      */
     public void quit() {
 
-        System.out.println("CROBS terminated.");
+        System.out.println(
+                "CROBS terminated."
+        );
 
         running = false;
     }
 
     /* ===============================
-       Getters / Setters
-       Used by CommandProcessor
+       Getters
        =============================== */
 
     public UserManager getUserManager() {
@@ -198,11 +195,11 @@ public class CROBS {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void setCurrentUser(
+            User currentUser) {
+
+        this.currentUser =
+                currentUser;
     }
 
-    public LogManager getLogManager() {
-        return logManager;
-    }
 }
