@@ -8,8 +8,7 @@ class CROBSTest {
 
     @Test
     void testCROBSConstructor() {
-        CROBS crobs = new CROBS();
-
+        CROBS crobs = new CROBS(null);
         assertNotNull(crobs);
     }
 }
