@@ -33,11 +33,8 @@ public class CommandProcessor {
     private final UndoManager undoManager;
 
     public CommandProcessor(CROBS crobs) {
-
         this.crobs = crobs;
-
         this.parser = new CommandParser();
-
         this.undoManager = new UndoManager();
     }
 
@@ -46,21 +43,17 @@ public class CommandProcessor {
         if (commandLine == null || commandLine.trim().isEmpty()) {
             return;
         }
+
         // ======================================
         // BON2 Undo / Redo
         // ======================================
-
-        if (commandLine.equalsIgnoreCase("undo")) {
-
+        if (commandLine.trim().equalsIgnoreCase("undo")) {
             undoManager.undo();
-
             return;
         }
 
-        if (commandLine.equalsIgnoreCase("redo")) {
-
+        if (commandLine.trim().equalsIgnoreCase("redo")) {
             undoManager.redo();
-
             return;
         }
         if (commandLine.equalsIgnoreCase("help")) {
@@ -69,30 +62,24 @@ public class CommandProcessor {
 
             return;
         }
-        ParsedCommand parsed =
-                parser.parse(commandLine);
 
-        String cmd =
-                parsed.getCommandName();
+        ParsedCommand parsed = parser.parse(commandLine);
+        if (parsed == null || parsed.getCommandName() == null) {
+            System.out.println("Error: Invalid command.");
+            return;
+        }
+
+        String cmd = parsed.getCommandName();
+        String[] parsedArgs = parsed.getArguments() != null ? parsed.getArguments() : new String[0];
 
         /*
          * Reconstruct original token format so
          * existing handlers continue to work.
          */
-        String[] tokens =
-                new String[
-                        parsed.getArguments().length + 1
-                        ];
-
+        String[] tokens = new String[parsedArgs.length + 1];
         tokens[0] = cmd;
+        System.arraycopy(parsedArgs, 0, tokens, 1, parsedArgs.length);
 
-        System.arraycopy(
-                parsed.getArguments(),
-                0,
-                tokens,
-                1,
-                parsed.getArguments().length
-        );
         // ============================================================
         // REQ18: quit
         // Terminates the current CROBS session.
@@ -102,7 +89,7 @@ public class CommandProcessor {
             crobs.quit();
             return;
         }
-        
+
         try {
             if (handleRoomCommand(cmd, tokens)) return;
             if (handleUserCommand(cmd, tokens)) return;
@@ -133,12 +120,7 @@ public class CommandProcessor {
                     System.out.println("Error: Usage: addUser name");
                 } else {
                     String fullName = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-                    AddUserCommand addUserCommand =
-                            new AddUserCommand(
-                                    um,
-                                    fullName
-                            );
-
+                    AddUserCommand addUserCommand = new AddUserCommand(um, fullName);
                     undoManager.executeCommand(addUserCommand);
                     System.out.println(
                             "User added successfully."
@@ -151,12 +133,7 @@ public class CommandProcessor {
                     System.out.println("Error: Usage: removeUser targetUserID");
                 } else {
                     RemoveUserCommand removeUserCommand =
-                            new RemoveUserCommand(
-                                    um,
-                                    crobs.getBookingManager(),
-                                    args[1]
-                            );
-
+                            new RemoveUserCommand(um, crobs.getBookingManager(), args[1]);
                     undoManager.executeCommand(removeUserCommand);
                     crobs.setCurrentUser(um.getCurrentUser()); // Defensive sync
                     System.out.println(
@@ -170,12 +147,7 @@ public class CommandProcessor {
                     System.out.println("Error: Usage: changeRole targetUserID newRole");
                 } else {
                     ChangeRoleCommand changeRoleCommand =
-                            new ChangeRoleCommand(
-                                    um,
-                                    args[1],
-                                    args[2]
-                            );
-
+                            new ChangeRoleCommand(um, args[1], args[2]);
                     undoManager.executeCommand(changeRoleCommand);
                     crobs.setCurrentUser(um.getCurrentUser()); // Sync for self-demotion
                     System.out.println(
@@ -221,14 +193,7 @@ public class CommandProcessor {
                     System.out.println("Error: Usage: addRoom roomType capacity features");
                 } else {
                     AddRoomCommand addRoomCommand =
-                            new AddRoomCommand(
-                                    rm,
-                                    user,
-                                    args[1],
-                                    args[2],
-                                    args[3]
-                            );
-
+                            new AddRoomCommand(rm, user, args[1], args[2], args[3]);
                     undoManager.executeCommand(addRoomCommand);
                     System.out.println("Room added successfully.");
                 }
@@ -239,19 +204,9 @@ public class CommandProcessor {
                     System.out.println("Error: Usage: modifyRoom roomID field newValue");
                 } else {
                     ModifyRoomCommand modifyRoomCommand =
-                            new ModifyRoomCommand(
-                                    rm,
-                                    user,
-                                    args[1],
-                                    args[2],
-                                    args[3]
-                            );
-
+                            new ModifyRoomCommand(rm, user, args[1], args[2], args[3]);
                     undoManager.executeCommand(modifyRoomCommand);
-
-                    System.out.println(
-                            "Room modified successfully."
-                    );
+                    System.out.println("Room modified successfully.");
                 }
                 return true;
 
@@ -260,18 +215,9 @@ public class CommandProcessor {
                     System.out.println("Error: Usage: deleteRoom roomID");
                 } else {
                     DeleteRoomCommand deleteRoomCommand =
-                            new DeleteRoomCommand(
-                                    rm,
-                                    crobs.getBookingManager(),
-                                    user,
-                                    args[1]
-                            );
-
+                            new DeleteRoomCommand(rm, crobs.getBookingManager(), user, args[1]);
                     undoManager.executeCommand(deleteRoomCommand);
-
-                    System.out.println(
-                            "Room deleted successfully."
-                    );
+                    System.out.println("Room deleted successfully.");
                 }
                 return true;
 
@@ -301,8 +247,8 @@ public class CommandProcessor {
     }
 
     private void printRoom(Room r) {
-        System.out.println(r.getRoomId() + " " + r.getRoomType().getTypeName() + " " 
-                           + r.getCapacity() + " " + r.getFeaturesAsString());
+        System.out.println(r.getRoomId() + " " + r.getRoomType().getTypeName() + " "
+                + r.getCapacity() + " " + r.getFeaturesAsString());
     }
 
     // =========================================================================
@@ -327,115 +273,101 @@ public class CommandProcessor {
                           purpose(args, 5)
                   );
 
-          undoManager.executeCommand(bookCommand);
+            case "modifyBooking":
+                minimum(args, 7);
+                ModifyBookingCommand modifyBookingCommand =
+                        new ModifyBookingCommand(
+                                bm,
+                                user,
+                                args[1],
+                                args[2],
+                                date(args[3]),
+                                time(args[4]),
+                                time(args[5]),
+                                purpose(args, 6)
+                        );
+                undoManager.executeCommand(modifyBookingCommand);
+                System.out.println("Booking modified.");
+                return true;
 
-          System.out.println(
-                  "Booking created."
-          );
-        return true;
-      case "modifyBooking":
-        minimum(args, 7);
-          ModifyBookingCommand modifyBookingCommand =
-                  new ModifyBookingCommand(
-                          bm,
-                          user,
-                          args[1],
-                          args[2],
-                          date(args[3]),
-                          time(args[4]),
-                          time(args[5]),
-                          purpose(args, 6)
-                  );
+            case "deleteBooking":
+                count(args, 2);
+                DeleteBookingCommand deleteBookingCommand =
+                        new DeleteBookingCommand(bm, user, args[1]);
+                undoManager.executeCommand(deleteBookingCommand);
+                System.out.println("Booking cancelled: " + args[1]);
+                return true;
 
-          undoManager.executeCommand(modifyBookingCommand);
+            case "search":
+                count(args, 6);
+                List<Room> found =
+                        crobs
+                                .getSearchService()
+                                .search(
+                                        user,
+                                        date(args[1]),
+                                        time(args[2]),
+                                        time(args[3]),
+                                        Integer.parseInt(args[4]),
+                                        args[5].equals("-")
+                                                ? java.util.Collections.emptyList()
+                                                : Arrays.asList(args[5].split(",")));
+                if (found.isEmpty()) System.out.println("No available rooms.");
+                for (Room r : found) printRoom(r);
+                return true;
 
-          System.out.println(
-                  "Booking modified."
-          );
-        return true;
-      case "deleteBooking":
-        count(args, 2);
-          DeleteBookingCommand deleteBookingCommand =
-                  new DeleteBookingCommand(
-                          bm,
-                          user,
-                          args[1]
-                  );
+            case "schedule":
+                count(args, 3);
+                printBookings(bm.getSchedule(user, args[1], date(args[2])));
+                return true;
 
-          undoManager.executeCommand(deleteBookingCommand);
+            case "listBookings":
+                count(args, 1);
+                printBookings(bm.listBookings(user));
+                return true;
 
-          System.out.println(
-                  "Booking cancelled: "
-                          + args[1]
-          );
-        return true;
-      case "search":
-        count(args, 6);
-        List<Room> found =
-            crobs
-                .getSearchService()
-                .search(
-                    user,
-                    date(args[1]),
-                    time(args[2]),
-                    time(args[3]),
-                    Integer.parseInt(args[4]),
-                    args[5].equals("-")
-                        ? java.util.Collections.emptyList()
-                        : java.util.Arrays.asList(args[5].split(",")));
-        if (found.isEmpty()) System.out.println("No available rooms.");
-        for (Room r : found) printRoom(r);
-        return true;
-      case "schedule":
-        count(args, 3);
-        printBookings(bm.getSchedule(user, args[1], date(args[2])));
-        return true;
-      case "listBookings":
-        count(args, 1);
-        printBookings(bm.listBookings(user));
-        return true;
-      default:
-        return false;
+            default:
+                return false;
+        }
     }
-  }
 
-  private static void count(String[] args, int n) {
-    if (args.length != n)
-      throw new IllegalArgumentException("Incorrect number of arguments for " + args[0]);
-  }
+    private static void count(String[] args, int n) {
+        if (args.length != n)
+            throw new IllegalArgumentException("Incorrect number of arguments for " + args[0]);
+    }
 
-  private static void minimum(String[] args, int n) {
-    if (args.length < n) throw new IllegalArgumentException("Missing arguments for " + args[0]);
-  }
+    private static void minimum(String[] args, int n) {
+        if (args.length < n) throw new IllegalArgumentException("Missing arguments for " + args[0]);
+    }
 
-  private static java.time.LocalDate date(String s) {
-    return java.time.LocalDate.parse(s);
-  }
+    private static java.time.LocalDate date(String s) {
+        return java.time.LocalDate.parse(s);
+    }
 
-  private static java.time.LocalTime time(String s) {
-    return java.time.LocalTime.parse(s);
-  }
+    private static java.time.LocalTime time(String s) {
+        return java.time.LocalTime.parse(s);
+    }
 
-  private static String purpose(String[] args, int offset) {
-    return String.join(" ", java.util.Arrays.copyOfRange(args, offset, args.length));
-  }
+    private static String purpose(String[] args, int offset) {
+        return String.join(" ", Arrays.copyOfRange(args, offset, args.length));
+    }
 
-  private static void printBooking(hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking b) {
-    System.out.println(
-        b.getBookingId()
-            + " "
-            + b.getRoomId()
-            + " "
-            + b.getDate()
-            + " "
-            + b.getStartTime()
-            + " "
-            + b.getEndTime()
-            + " owner="
-            + b.getUserId()
-            + " "
-            + b.getPurpose());
-  }
+    private static void printBooking(hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking b) {
+        System.out.println(
+                b.getBookingId()
+                        + " "
+                        + b.getRoomId()
+                        + " "
+                        + b.getDate()
+                        + " "
+                        + b.getStartTime()
+                        + " "
+                        + b.getEndTime()
+                        + " owner="
+                        + b.getUserId()
+                        + " "
+                        + b.getPurpose());
+    }
 
   private static void printBookings(
       List<hk.edu.polyu.comp.comp2021.crobs.model.booking.Booking> list) {

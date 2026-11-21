@@ -3,7 +3,6 @@ package hk.edu.polyu.comp.comp2021.crobs.model.room;
 import hk.edu.polyu.comp.comp2021.crobs.exception.InvalidCommandException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
